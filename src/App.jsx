@@ -1,9 +1,10 @@
+import { Button } from "antd";
 import React from "react";
 
 const App = () => {
   return (
     <div>
-      <h1>React App</h1>
+      <Button type="primary">Hello</Button>
     </div>
   )
 };
