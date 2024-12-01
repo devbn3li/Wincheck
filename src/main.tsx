@@ -1,8 +1,8 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ConfigProvider } from 'antd'; // Import ConfigProvider from Ant Design
-import App from './App';
-import './index.css';
+import Router from './Router';
+import './styles/index.css';
 // import Clarity from '@microsoft/clarity';
 
 // Need ID
@@ -41,7 +41,7 @@ const customTheme = {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ConfigProvider theme={customTheme}>
-      <App />
+      <Router />
     </ConfigProvider>
   </StrictMode>,
 );

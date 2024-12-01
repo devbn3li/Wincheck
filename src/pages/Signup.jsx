@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Input } from "antd";
 import Cookies from "js-cookie";
-import useStore from "./store";
+import useUser from "../store/useUser";
 
 export default function Signup() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
-    const setUser = useStore((state) => state.setUser);
+    const setUser = useUser((state) => state.setUser);
 
     const handleSignup = () => {
         // Simulate signup and token generation
