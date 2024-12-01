@@ -8,92 +8,118 @@ import { createRoot } from "react-dom/client";
 const Map = () => {
     const mapElement = useRef(null);
     const [map, setMap] = useState(null);
+    const [userMarker, setUserMarker] = useState(null);
+
     const [mapLongitude, setMapLongitude] = useState(31.2357); // Default longitude (Cairo, Egypt)
     const [mapLatitude, setMapLatitude] = useState(30.0444); // Default latitude (Cairo, Egypt)
     const [mapZoom, setMapZoom] = useState(20); // Default zoom level
-    const [userMarker, setUserMarker] = useState(null);
+    const [isGettingLocation, setIsGettingLocation] = useState(false);
 
-    const updateMap = () => {
-        if (map) {
-            map.setCenter([parseFloat(mapLongitude), parseFloat(mapLatitude)]);
-            map.setZoom(mapZoom);
-        }
-    };
+    // Marker element component
+    const MarkerElement = () => (
+        <div className="h-10 flex justify-center items-center aspect-square rounded-full p-2 text-red-500 text-2xl">
+            <FaMapMarkerAlt />
+        </div>
+    );
 
-    const getCurrentLocation = () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    setMapLatitude(latitude);
-                    setMapLongitude(longitude);
+    // Function to update or create the user marker
+    const updateMarker = (longitude, latitude) => {
+        if (!map) return;
 
-                    console.log(latitude, longitude);
-
-                    userMarker.setLngLat([longitude, latitude]);
-                    setUserMarker(marker);
-                    setMapZoom(20);
-                },
-                () => {
-                    alert("Unable to retrieve your location");
-                }
-            );
+        if (userMarker) {
+            setUserMarker((prevMarker) => {
+                prevMarker.setLngLat([longitude, latitude]);
+                return prevMarker;
+            });
         } else {
-            alert("Geolocation is not supported by this browser.");
+            const markerContainer = document.createElement("div");
+            const root = createRoot(markerContainer);
+            root.render(<MarkerElement />);
+
+            const newMarker = new tt.Marker({ element: markerContainer })
+                .setLngLat([longitude, latitude])
+                .addTo(map);
+
+            setUserMarker(newMarker);
         }
     };
 
-    map.on("load", () => {
+    // Get the user's current location
+    const getCurrentLocation = (check = true) => {
+        if (!navigator.geolocation) {
+            console.error("Geolocation is not supported.");
+            return;
+        }
 
-        console.log("Creating new marker");
+        navigator.geolocation.getCurrentPosition(
+            ({ coords: { latitude, longitude } }) => {
+                const lat = latitude || 30.0444; // Fallback to Cairo
+                const lng = longitude || 31.2357; // Fallback to Cairo
 
-        const customMarkerContainer = document.createElement("div");
-
-        const root = createRoot(customMarkerContainer);
-        root.render(<MarkerElement />);
-
-        const marker = new tt.Marker({ element: customMarkerContainer })
-          .setLngLat([userMarker.longitude, userMarker.latitude])
-          .addTo(map);
-    });
-
-    const MarkerElement = () => {
-        return (
-            <div className="user-location-marker h-5 aspect-square rounded-full p-2 text-red-500 text-2xl">
-                <FaMapMarkerAlt />
-            </div>
+                if (check && (lat != mapLatitude || lng != mapLongitude)) {
+                    setMapLatitude(lat);
+                    setMapLongitude(lng);
+                    setMapZoom(20);
+                    updateMarker(lng, lat);
+                }
+            },
+            (error) => console.error("Geolocation error:", error.message)
         );
     };
 
+    // Initialize the map on component mount
     useEffect(() => {
+        if (!mapElement.current) return;
+
         const mapInstance = tt.map({
             key: "LGRLpO9NGdpJxDLEi7Dxc8Osv5CyusEc",
             container: mapElement.current,
             center: [mapLongitude, mapLatitude],
             zoom: mapZoom,
         });
+
         setMap(mapInstance);
 
-        // Try to get the user's current location on mount
-        getCurrentLocation();
-
         return () => mapInstance.remove();
-    }, []);
-
-    useEffect(() => {
-        updateMap();
     }, [mapLongitude, mapLatitude, mapZoom]);
+
+    // Update the marker when the map is initialized
+    useEffect(() => {
+        if (map) getCurrentLocation();
+    }, [map]);
+
+    // Sync the map's center and marker when state changes
+    useEffect(() => {
+        if (!map) return;
+
+        setMap((prevMap) => {
+            prevMap.setCenter([mapLongitude, mapLatitude]);
+            return prevMap;
+        });
+        setMap((prevMap) => {
+            prevMap.setCenter([mapLongitude, mapLatitude]);
+            return prevMap;
+        });
+        updateMarker(mapLongitude, mapLatitude);
+    }, [mapLongitude, mapLatitude, mapZoom]);
+
+    // Handle "Get Current Location" button click
+    const handleGetLocation = () => {
+        if (!isGettingLocation) {
+            setIsGettingLocation(true);
+            getCurrentLocation(false);
+            setTimeout(() => setIsGettingLocation(false), 2000);
+        }
+    };
 
     return (
         <div className="relative">
-            <div className="!h-full w-full absolute top-0 left-0">
-                <div
-                    ref={mapElement}
-                    className="mapDiv min-h-dvh !h-full w-full"
-                ></div>
-            </div>
+            <div
+                ref={mapElement}
+                className="absolute inset-0 h-dvh w-full"
+            ></div>
             <div className="absolute top-4 left-4 z-10">
-                <Button onClick={getCurrentLocation}>
+                <Button onClick={handleGetLocation}>
                     Get Current Location
                 </Button>
             </div>
