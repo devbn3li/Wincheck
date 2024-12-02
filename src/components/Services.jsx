@@ -48,48 +48,48 @@ export default function Services({ locatService }) {
         <img src={WorkshopIcon} alt="Workshop Icon" />
       </button>
 
-      <div
-        className={`fixed top-5 ${
-          isOpen ? "right-5" : "-right-full"
-        } h-[calc(100%-40px)] w-full md:w-1/3 max-w-[500px] rounded-2xl p-4 bg-white shadow-lg transition-all duration-300 z-50`}
-      >
-        <div className="p-4 h-full flex flex-col px-2 py-4">
-          <h2 className="text-2xl font-bold text-[#4840A3]">Nearby Services</h2>
+            <div
+                className={`fixed top-5 ${
+                    isOpen ? "right-5" : "-right-full"
+                } h-[calc(100%-40px)] w-[calc(100%-40px)] md:w-1/3 max-w-[500px] rounded-2xl p-4 bg-white shadow-lg transition-all duration-300 z-50`}
+            >
+                <div className="p-4 h-full flex flex-col px-2 py-4">
+                    <h2 className="text-2xl font-bold text-[#4840A3]">
+                        Nearby Services
+                    </h2>
 
-          <div className="mt-4 overflow-x-hidden overflow-y-auto h-full flex flex-col gap-4">
-            {services
-              ?.filter(({ role }) => role !== "user")
-              .map(({ id, username, role, location }) => (
-                <div
-                  key={id}
-                  className="border border-gray-300 p-4 rounded-lg shadow-sm"
-                >
-                  <h3 className="text-lg font-bold text-[#4840A3]">{role}</h3>
-                  <p className="text-gray-600">{username}</p>
-
-                  <div className="flex gap-4 mt-4">
-                    <Button
-                      onClick={() =>
-                        locatService(location.lng, location.lat, role)
-                      }
-                      type="primary"
-                      className="w-full font-bold"
-                    >
-                      Locate
-                    </Button>
-                    <Button
-                      type="default"
-                      color="default"
-                      variant="solid"
-                      className="w-full font-bold"
-                    >
-                      Request
-                    </Button>
-                  </div>
+                    <div className="mt-4 overflow-x-hidden overflow-y-auto h-full flex flex-col gap-4">
+                        {services
+                            ?.filter(({ role }) => role !== "user")
+                            .map(({ id, username, role, location }) => (
+                                <div
+                                    key={id}
+                                    className="border border-gray-300 p-4 rounded-lg shadow-sm"
+                                >
+                                    <h3 className="text-lg font-bold text-[#4840A3]">
+                                        {role}
+                                    </h3>
+                                    <p className="text-gray-600">{username}</p>
+                                    <div className="flex gap-4 mt-4">
+                                        <Button
+                                            onClick={() => locatService(location.lng, location.lat, role)}
+                                            type="primary"
+                                            className="w-full font-bold"
+                                        >
+                                            Locate
+                                        </Button>
+                                        <Button
+                                            type="default"
+                                            color="default"
+                                            variant="solid"
+                                            className="w-full font-bold">
+                                            Request
+                                        </Button>
+                                    </div>
+                                </div>
+                            ))}
+                    </div>
                 </div>
-              ))}
-          </div>
-        </div>
 
         <button
           className="absolute top-4 right-4 text-[#4840A3] font-bold"
