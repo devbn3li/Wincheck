@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button, Input, message } from "antd";
 import useUser from "../store/useUser";
 import welcome from "/Images/welcome.png";
@@ -17,9 +17,9 @@ export default function Login() {
       message.error("Please fill in both fields");
       return;
     }
-  
+
     setLoading(true);
-  
+
     try {
       const response = await fetch(
         "https://wincheck-production.up.railway.app/api/auth/login",
@@ -31,19 +31,19 @@ export default function Login() {
           body: JSON.stringify({ email, password }),
         }
       );
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Login failed");
       }
-  
+
       const data = await response.json();
-  
+
       if (data.status === "success" && data.token) {
         setCookie("session_token", data.token, 7);
-  
+
         setUser({ email });
-  
+
         message.success("Login successful!");
         navigate("/");
       } else {
@@ -55,7 +55,6 @@ export default function Login() {
       setLoading(false);
     }
   };
-  
 
   return (
     <div className="flex justify-center items-center h-screen bg-[#D8EFF7]">
@@ -98,9 +97,9 @@ export default function Login() {
           </div>
           <div className="py-6">
             <span>Don't have an account? </span>
-            <a href="/signup" className="text-[#4840A3] hover:text-[#EAB95C]">
+            <Link to="/signup" className="text-[#4840A3] hover:text-[#EAB95C]">
               Sign up
-            </a>
+            </Link>
           </div>
         </div>
         <div className="hidden md:block w-full md:max-w-md">

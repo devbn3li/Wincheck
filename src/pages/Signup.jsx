@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button, Input, Select, Checkbox, message } from "antd";
 // import Cookies from "js-cookie";
 import useUser from "../store/useUser";
@@ -160,12 +160,12 @@ export default function Signup() {
               </Button>
               <div className="py-6">
                 <span>Already have an Account? </span>
-                <a
-                  href="/login"
+                <Link
+                  to="/login"
                   className="text-[#4840A3] hover:text-[#EAB95C]"
                 >
-                  Login here
-                </a>
+                  Sign up
+                </Link>
               </div>
             </div>
           </div>
