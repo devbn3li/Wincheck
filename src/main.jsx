@@ -33,7 +33,7 @@ const customTheme = {
   },
 };
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ConfigProvider theme={customTheme}>
       <Router />
