@@ -1,16 +1,11 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ConfigProvider } from 'antd'; // Import ConfigProvider from Ant Design
+import { ConfigProvider } from 'antd';
 import Router from './Router';
 import './styles/index.css';
-// import Clarity from '@microsoft/clarity';
 
-// Need ID
-// const projectId = "need ID";
 
-// Clarity.init(projectId);
 
-// Custom Ant Design Theme
 const customTheme = {
   token: {
     colorPrimary: '#F9CD6A',
