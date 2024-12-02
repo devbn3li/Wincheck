@@ -29,7 +29,7 @@ export default function Signup() {
       return;
     }
 
-        setLoading(true);
+    setLoading(true);
 
     const payload = {
       username,
@@ -58,11 +58,9 @@ export default function Signup() {
       const data = await response.json();
 
       if (data.status === "success" && data.token) {
-        // Save the token to localStorage for persistence
-        setCookie("session_token", token, 7);
-        // Save the user details in the state
+        setCookie("session_token", data.token, 7);
+
         setUser({ username, role });
-        // Cookies.set("session_token", data.token);
 
         message.success("Signup successful!");
         navigate("/");
@@ -84,7 +82,7 @@ export default function Signup() {
     <div>
       <div className="flex justify-center items-center h-screen bg-[#D8EFF7]">
         <div className="flex flex-col md:flex-row md:rounded-2xl shadow-md overflow-hidden w-full max-md:h-full md:w-auto">
-          <div className="bg-white flex flex-col justify-center items-center p-8 max-md:h-screen w-full md:max-w-md">
+          <div className="bg-white flex flex-col justify-center items-center p-8 max-md:h-[100vh] w-full md:max-w-md">
             <h2 className="text-3xl font-bold text-center mb-6">
               Welcome to Wincheck
             </h2>
@@ -171,8 +169,12 @@ export default function Signup() {
               </div>
             </div>
           </div>
-          <div className="max-md:hidden w-full max-w-md">
-            <img src={welcome} alt="Welcome to Wincheck" />
+          <div className="hidden md:block w-full md:max-w-md">
+            <img
+              src={welcome}
+              alt="Welcome"
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
       </div>

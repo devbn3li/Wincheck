@@ -17,9 +17,9 @@ export default function Login() {
       message.error("Please fill in both fields");
       return;
     }
-
+  
     setLoading(true);
-
+  
     try {
       const response = await fetch(
         "https://wincheck-production.up.railway.app/api/auth/login",
@@ -31,20 +31,19 @@ export default function Login() {
           body: JSON.stringify({ email, password }),
         }
       );
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Login failed");
       }
-
+  
       const data = await response.json();
-
+  
       if (data.status === "success" && data.token) {
-        setCookie("session_token", token, 7);
-
-        // Save user details in state
+        setCookie("session_token", data.token, 7);
+  
         setUser({ email });
-
+  
         message.success("Login successful!");
         navigate("/");
       } else {
@@ -56,12 +55,12 @@ export default function Login() {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="flex justify-center items-center h-screen bg-[#D8EFF7]">
       <div className="flex flex-col md:flex-row md:rounded-2xl shadow-md overflow-hidden w-full md:w-auto">
-        {/* Form Section */}
-        <div className="bg-white flex flex-col justify-center items-center p-8 w-full md:max-w-md">
+        <div className="bg-white flex flex-col justify-center items-center p-8 w-full md:max-w-md max-md:h-[100vh]">
           <h2 className="text-3xl font-bold text-center mb-6 text-[#4840A3]">
             Welcome Back!
           </h2>
@@ -104,8 +103,6 @@ export default function Login() {
             </a>
           </div>
         </div>
-
-        {/* Image Section */}
         <div className="hidden md:block w-full md:max-w-md">
           <img
             src={welcome}
