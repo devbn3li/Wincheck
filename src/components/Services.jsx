@@ -11,7 +11,7 @@ const Services = ({ locatService, selecteService }) => {
     const [drawerVisible, setDrawerVisible] = useState(false);
 
     const handleLocateService = (username, lng, lat, role, id, phone) => {
-        locatService(lng, lat, role, id);
+        locatService(lng, lat, role, id, username, (phone || "01001055935"));
         selecteService({ username, role, phone: (phone || "01001055935") });
         setDrawerVisible(false);
     };

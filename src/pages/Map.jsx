@@ -138,10 +138,10 @@ const Map = () => {
 
   const locatService = (longitude, latitude, role, id, username, phone) => {
     if (!map || isNaN(latitude) || isNaN(longitude)) return;
-
+  
     const existingMarker = markers.find((m) => m.id === id);
     if (existingMarker) return;
-
+  
     const markerContainer = document.createElement("div");
     const root = createRoot(markerContainer);
     root.render(<MarkerElement type={role} />);
@@ -149,14 +149,20 @@ const Map = () => {
       .setLngLat([longitude, latitude])
       .addTo(map);
 
+    newMarker.getElement().addEventListener('click', () => {
+      if (role !== 'user') {
+        setSelectedService({ username, role, phone });
+        setDrawerVisible(true);
+      }
+    });
+        
+    // Store marker with role and ID
     setMarkers((prev) => [...prev, { id, role, marker: newMarker }]);
+  
+    // Center the map on the new marker
     map.setCenter([longitude, latitude]);
-
-    if (role !== "user") {
-      setSelectedService({ username, role, phone });
-      setDrawerVisible(true);
-    }
   };
+  
 
   const handleCopyPhone = () => {
     navigator.clipboard.writeText(selectedService.phone);
