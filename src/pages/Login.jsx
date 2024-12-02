@@ -1,33 +1,60 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Input, message } from "antd";
-import Cookies from "js-cookie";
 import useUser from "../store/useUser";
 import welcome from "/Images/welcome.png";
 
 export default function Login() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const setUser = useUser((state) => state.setUser);
 
-  const handleLogin = () => {
-    if (!username || !password) {
+  const handleLogin = async () => {
+    if (!email || !password) {
       message.error("Please fill in both fields");
       return;
     }
 
     setLoading(true);
 
-    // Simulate login and token validation
-    setTimeout(() => {
-      const token = "dummy-token";
-      Cookies.set("session_token", token);
-      setUser({ username });
+    try {
+      const response = await fetch(
+        "https://wincheck-production.up.railway.app/api/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Login failed");
+      }
+
+      const data = await response.json();
+
+      if (data.status === "success" && data.token) {
+        // Save token to localStorage
+        localStorage.setItem("auth_token", `Bearer ${data.token}`);
+
+        // Save user details in state
+        setUser({ email });
+
+        message.success("Login successful!");
+        navigate("/");
+      } else {
+        throw new Error("Unexpected response format");
+      }
+    } catch (error) {
+      message.error(error.message || "Login failed");
+    } finally {
       setLoading(false);
-      navigate("/");
-    }, 1000);
+    }
   };
 
   return (
@@ -40,13 +67,14 @@ export default function Login() {
           </h2>
           <div className="flex flex-col gap-4 w-full">
             <div>
-              <label htmlFor="username" className="text-[#4840A3] font-bold">
-                Username
+              <label htmlFor="email" className="text-[#4840A3] font-bold">
+                Email
               </label>
               <Input
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
