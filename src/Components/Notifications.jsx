@@ -3,7 +3,6 @@ import React, { useState } from "react";
 export default function Notifications() {
   const [isOpen, setIsOpen] = useState(false);
 
-  // بيانات الإشعارات (تجريبية - يمكنك استبدالها بـ API لاحقًا)
   const notifications = [
     { id: 1, service: "Winch Service", type: "Mechanic" },
     { id: 2, service: "Repair Service", type: "Driver" },
@@ -16,7 +15,6 @@ export default function Notifications() {
 
   return (
     <>
-      {/* أيقونة الإشعارات */}
       <button
         className="fixed bottom-4 right-4 bg-[#4840A3] text-white p-4 rounded-full shadow-lg hover:bg-[#EAB95C]"
         onClick={toggleSidebar}
@@ -24,7 +22,6 @@ export default function Notifications() {
         Notifications
       </button>
 
-      {/* Sidebar */}
       <div
         className={`fixed top-0 ${
           isOpen ? "right-0" : "-right-full"
@@ -33,7 +30,6 @@ export default function Notifications() {
         <div className="p-4">
           <h2 className="text-2xl font-bold text-[#4840A3]">Notifications</h2>
 
-          {/* قائمة الإشعارات */}
           <div className="mt-4 flex flex-col gap-4">
             {notifications.map((notification) => (
               <div
@@ -58,7 +54,6 @@ export default function Notifications() {
           </div>
         </div>
 
-        {/* زر الإغلاق */}
         <button
           className="absolute top-4 right-4 text-[#4840A3] font-bold"
           onClick={toggleSidebar}
