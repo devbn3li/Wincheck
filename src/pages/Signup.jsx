@@ -160,6 +160,15 @@ export default function Signup() {
               >
                 Signup
               </Button>
+              <div className="py-6">
+                <span>Already have an Account? </span>
+                <a
+                  href="/login"
+                  className="text-[#4840A3] hover:text-[#EAB95C]"
+                >
+                  Login here
+                </a>
+              </div>
             </div>
           </div>
           <div className="max-md:hidden w-full max-w-md">
