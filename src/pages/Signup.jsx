@@ -164,7 +164,7 @@ export default function Signup() {
                   to="/login"
                   className="text-[#4840A3] hover:text-[#EAB95C]"
                 >
-                  Sign up
+                  Login
                 </Link>
               </div>
             </div>
