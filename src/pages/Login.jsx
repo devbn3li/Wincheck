@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Input, message } from "antd";
 import useUser from "../store/useUser";
 import welcome from "/Images/welcome.png";
+import { setCookie } from "../utils/cookies";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -39,8 +40,7 @@ export default function Login() {
       const data = await response.json();
 
       if (data.status === "success" && data.token) {
-        // Save token to localStorage
-        localStorage.setItem("auth_token", `Bearer ${data.token}`);
+        setCookie("session_token", token, 7);
 
         // Save user details in state
         setUser({ email });
@@ -59,10 +59,10 @@ export default function Login() {
 
   return (
     <div className="flex justify-center items-center h-screen bg-[#D8EFF7]">
-      <div className="flex flex-col md:flex-row md:rounded-2xl shadow-md overflow-hidden w-full max-md:h-full md:w-auto">
+      <div className="flex flex-col md:flex-row md:rounded-2xl shadow-md overflow-hidden w-full md:w-auto">
         {/* Form Section */}
-        <div className="bg-white flex flex-col justify-center items-center p-8 w-full md:max-w-md max-md:h-full">
-          <h2 className="text-3xl font-bold text-center mb-6 text-[#4840A3] max-md:text-start">
+        <div className="bg-white flex flex-col justify-center items-center p-8 w-full md:max-w-md">
+          <h2 className="text-3xl font-bold text-center mb-6 text-[#4840A3]">
             Welcome Back!
           </h2>
           <div className="flex flex-col gap-4 w-full">
@@ -82,7 +82,8 @@ export default function Login() {
                 Password
               </label>
               <Input.Password
-                placeholder="Password"
+                id="password"
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -97,9 +98,9 @@ export default function Login() {
             </Button>
           </div>
           <div className="py-6">
-            <span>Don't have an Account? </span>
+            <span>Don't have an account? </span>
             <a href="/signup" className="text-[#4840A3] hover:text-[#EAB95C]">
-              Register here
+              Sign up
             </a>
           </div>
         </div>
@@ -108,8 +109,8 @@ export default function Login() {
         <div className="hidden md:block w-full md:max-w-md">
           <img
             src={welcome}
-            alt="Welcome to Wincheck"
-            className="w-full object-cover"
+            alt="Welcome"
+            className="w-full h-full object-cover"
           />
         </div>
       </div>

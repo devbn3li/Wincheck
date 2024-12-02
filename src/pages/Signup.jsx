@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Input, Select, Checkbox, message } from "antd";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 import useUser from "../store/useUser";
 import welcome from "/Images/welcome.png";
+import { setCookie } from "../utils/cookies";
 
 const { Option } = Select;
 
@@ -28,7 +29,7 @@ export default function Signup() {
       return;
     }
 
-    setLoading(true);
+        setLoading(true);
 
     const payload = {
       username,
@@ -58,11 +59,10 @@ export default function Signup() {
 
       if (data.status === "success" && data.token) {
         // Save the token to localStorage for persistence
-        localStorage.setItem("auth_token", `Bearer ${data.token}`);
-
+        setCookie("session_token", token, 7);
         // Save the user details in the state
         setUser({ username, role });
-        Cookies.set("session_token", data.token);
+        // Cookies.set("session_token", data.token);
 
         message.success("Signup successful!");
         navigate("/");
