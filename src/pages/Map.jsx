@@ -8,11 +8,10 @@ import { createRoot } from "react-dom/client";
 const Map = () => {
     const mapElement = useRef(null);
     const [map, setMap] = useState(null);
-    const [userMarker, setUserMarker] = useState(null);
-
-    const [mapLongitude, setMapLongitude] = useState(31.2357); // Default longitude (Cairo, Egypt)
-    const [mapLatitude, setMapLatitude] = useState(30.0444); // Default latitude (Cairo, Egypt)
-    const [mapZoom, setMapZoom] = useState(20); // Default zoom level
+    const [marker, setMarker] = useState(null);
+    const [mapLongitude, setMapLongitude] = useState(31.2357);
+    const [mapLatitude, setMapLatitude] = useState(30.0444);
+    const [mapZoom, setMapZoom] = useState(15);
     const [isGettingLocation, setIsGettingLocation] = useState(false);
 
     // Marker element component
@@ -22,15 +21,12 @@ const Map = () => {
         </div>
     );
 
-    // Function to update or create the user marker
+    // Function to update or create the marker
     const updateMarker = (longitude, latitude) => {
         if (!map) return;
 
-        if (userMarker) {
-            setUserMarker((prevMarker) => {
-                prevMarker.setLngLat([longitude, latitude]);
-                return prevMarker;
-            });
+        if (marker) {
+            marker.setLngLat([longitude, latitude]);
         } else {
             const markerContainer = document.createElement("div");
             const root = createRoot(markerContainer);
@@ -40,12 +36,12 @@ const Map = () => {
                 .setLngLat([longitude, latitude])
                 .addTo(map);
 
-            setUserMarker(newMarker);
+            setMarker(newMarker);
         }
     };
 
     // Get the user's current location
-    const getCurrentLocation = (check = true) => {
+    const getCurrentLocation = () => {
         if (!navigator.geolocation) {
             console.error("Geolocation is not supported.");
             return;
@@ -53,15 +49,11 @@ const Map = () => {
 
         navigator.geolocation.getCurrentPosition(
             ({ coords: { latitude, longitude } }) => {
-                const lat = latitude || 30.0444; // Fallback to Cairo
-                const lng = longitude || 31.2357; // Fallback to Cairo
-
-                if (check && (lat != mapLatitude || lng != mapLongitude)) {
-                    setMapLatitude(lat);
-                    setMapLongitude(lng);
-                    setMapZoom(20);
-                    updateMarker(lng, lat);
-                }
+                setMapLatitude(latitude);
+                setMapLongitude(longitude);
+                setMapZoom(15);
+                updateMarker(longitude, latitude);
+                map.setCenter([longitude, latitude]);
             },
             (error) => console.error("Geolocation error:", error.message)
         );
@@ -79,47 +71,33 @@ const Map = () => {
         });
 
         setMap(mapInstance);
+        handleGetLocation();
 
         return () => mapInstance.remove();
-    }, [mapLongitude, mapLatitude, mapZoom]);
+    }, []);
 
-    // Update the marker when the map is initialized
+    // Sync the marker and map center when the button is clicked
     useEffect(() => {
-        if (map) getCurrentLocation();
-    }, [map]);
+        if (map) {
+            map.setCenter([mapLongitude, mapLatitude]);
+            updateMarker(mapLongitude, mapLatitude);
+        }
+    }, [mapLongitude, mapLatitude]);
 
-    // Sync the map's center and marker when state changes
-    useEffect(() => {
-        if (!map) return;
-
-        setMap((prevMap) => {
-            prevMap.setCenter([mapLongitude, mapLatitude]);
-            return prevMap;
-        });
-        setMap((prevMap) => {
-            prevMap.setCenter([mapLongitude, mapLatitude]);
-            return prevMap;
-        });
-        updateMarker(mapLongitude, mapLatitude);
-    }, [mapLongitude, mapLatitude, mapZoom]);
-
-    // Handle "Get Current Location" button click
+    // Button click handler
     const handleGetLocation = () => {
         if (!isGettingLocation) {
             setIsGettingLocation(true);
-            getCurrentLocation(false);
+            getCurrentLocation();
             setTimeout(() => setIsGettingLocation(false), 2000);
         }
     };
 
     return (
         <div className="relative">
-            <div
-                ref={mapElement}
-                className="absolute inset-0 h-dvh w-full"
-            ></div>
+            <div ref={mapElement} className="absolute inset-0 h-dvh w-full"></div>
             <div className="absolute top-4 left-4 z-10">
-                <Button onClick={handleGetLocation}>
+                <Button onClick={handleGetLocation} loading={isGettingLocation}>
                     Get Current Location
                 </Button>
             </div>
