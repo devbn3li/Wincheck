@@ -41,7 +41,7 @@ export default function Signup() {
 
     try {
       const response = await fetch(
-        "https://wincheck-production.up.railway.app/api/auth/signup",
+        "https://winch.azurewebsites.net/api/auth/signup",
         {
           method: "POST",
           headers: {

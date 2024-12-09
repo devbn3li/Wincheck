@@ -32,7 +32,7 @@ const Map = () => {
     try {
       const token = getCookie("session_token");
       const response = await axios.get(
-        "https://wincheck-production.up.railway.app/api/user/nearby",
+        "https://winch.azurewebsites.net/api/user/nearby",
         {
           headers: {
             Authorization: `Bearer ${token}`,

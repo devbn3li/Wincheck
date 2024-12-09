@@ -22,7 +22,7 @@ export default function Login() {
 
     try {
       const response = await fetch(
-        "https://wincheck-production.up.railway.app/api/auth/login",
+        "https://winch.azurewebsites.net/api/auth/login",
         {
           method: "POST",
           headers: {
